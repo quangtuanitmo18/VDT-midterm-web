@@ -1,8 +1,10 @@
 const Header = () => {
   return (
-    <div>
+    <div className='container'>
       <header>
-        <h1>Header</h1>
+        <div className='flex justify-center p-8'>
+          <h1 className='text-3xl text-red-500'>VDT Midterm 2024</h1>
+        </div>
       </header>
     </div>
   )
