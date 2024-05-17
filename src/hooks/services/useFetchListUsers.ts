@@ -4,30 +4,29 @@ import { queryResources } from '../resources/query.resources'
 import userService from 'src/services/user.service'
 import { User } from 'src/types/user/user.type'
 
-export default function useFetchUserById(id: string) {
+export default function useFetchListUsers() {
   const {
-    data: userResponse,
+    data: listUsersResponse,
     isError,
     error,
     refetch,
     isPending
   } = useQuery({
-    queryKey: [queryResources.user.getById, id],
-    queryFn: () => userService.getUserById(id),
-    enabled: !!id
+    queryKey: [queryResources.user.list],
+    queryFn: () => userService.getListUsers()
   })
 
   if (isError) {
-    toast('Load user thất bại', {
+    toast('Load list users thất bại', {
       position: 'top-right',
       autoClose: 1000
     })
   }
   return {
-    user: userResponse?.data.data as User,
-    isPendingFetchUserByid: isPending,
-    refetchUserById: refetch,
-    isErrorFetchUserById: isError,
+    listUsers: listUsersResponse?.data.data as User[],
+    isPendingFetchListUsers: isPending,
+    refetchListUsers: refetch,
+    isErrorFetchListUsers: isError,
     error
   }
 }
