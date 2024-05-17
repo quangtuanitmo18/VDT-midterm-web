@@ -13,6 +13,10 @@ import { Button } from 'src/components/ui/button'
 import useMutationDeleteUser from 'src/hooks/services/useMutationDeleteUser'
 import { toast } from 'react-toastify'
 import useFetchListUsers from 'src/hooks/services/useFetchListUsers'
+import { Dialog, DialogTrigger } from 'src/components/ui/dialog'
+import DialogContentUser from './dialogContentUser'
+import { useQueryClient } from '@tanstack/react-query'
+import { queryResources } from 'src/hooks/resources/query.resources'
 
 export const columns: ColumnDef<User>[] = [
   {
@@ -53,7 +57,7 @@ export const columns: ColumnDef<User>[] = [
     cell: ({ row }) => {
       const user = row.original
       const { deleteUserMutate } = useMutationDeleteUser()
-      const { refetchListUsers } = useFetchListUsers()
+      const queryClient = useQueryClient()
 
       return (
         <DropdownMenu>
@@ -67,21 +71,34 @@ export const columns: ColumnDef<User>[] = [
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem onClick={() => navigator.clipboard.writeText(user._id)}>Copy user ID</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
+            <div
+              className='mb-2'
               onClick={() =>
                 deleteUserMutate(
                   { userId: user._id },
                   {
                     onSuccess: () => {
                       toast.success('Delete user successfully!')
-                      refetchListUsers()
+                      queryClient.invalidateQueries({ queryKey: [queryResources.user.list] })
                     }
                   }
                 )
               }
             >
-              Delete user
-            </DropdownMenuItem>
+              <Button variant='outline'>Delete user</Button>
+            </div>
+
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant='outline'>Update user</Button>
+              </DialogTrigger>
+              <DialogContentUser
+                dialogTitle='Update user'
+                dialogBtnTitle='Update'
+                actionType='update'
+                userId={user._id}
+              ></DialogContentUser>
+            </Dialog>
           </DropdownMenuContent>
         </DropdownMenu>
       )

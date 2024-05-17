@@ -18,6 +18,10 @@ const userService = {
 
   createUser(data: CreateUserBody) {
     return http.post('users/create', data)
+  },
+
+  updateUser(id: string, data: CreateUserBody) {
+    return http.put(`users/update/${id}`, data)
   }
 }
 

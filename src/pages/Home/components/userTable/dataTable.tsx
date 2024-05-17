@@ -1,4 +1,3 @@
-import { UseMutateFunction } from '@tanstack/react-query'
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -23,8 +22,6 @@ import {
 import { Input } from 'src/components/ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'src/components/ui/table'
 import DialogContentUser from './dialogContentUser'
-import useMutationCreateUser from 'src/hooks/services/useMutationCreateUser'
-import { toast } from 'react-toastify'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -35,40 +32,6 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
-
-  const { createUserMutate } = useMutationCreateUser()
-
-  const [formDataUser, setFormDataUser] = useState({
-    fullname: '',
-    gender: 'nam',
-    university: ''
-  })
-  console.log(formDataUser)
-
-  const handleChangeDataUser = (e: any) => {
-    const { name, value } = e.target
-    setFormDataUser({
-      ...formDataUser,
-      [name]: value
-    })
-  }
-  const handleCreateUser = (e: any) => {
-    e.preventDefault()
-    console.log(formDataUser)
-    createUserMutate(
-      { user: formDataUser },
-      {
-        onSuccess: () => {
-          toast.success('Create user successfully')
-          setFormDataUser({
-            fullname: '',
-            gender: 'nam',
-            university: ''
-          })
-        }
-      }
-    )
-  }
 
   const table = useReactTable({
     data,
@@ -96,18 +59,12 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
           onChange={(event) => table.getColumn('fullname')?.setFilterValue(event.target.value)}
           className='max-w-sm'
         />
-        <div className='space-x-2'>
+        <div className='flex items-center justify-center gap-2'>
           <Dialog>
             <DialogTrigger asChild>
               <Button variant='outline'>Add user</Button>
             </DialogTrigger>
-            <DialogContentUser
-              dialogTitle='Add user'
-              dialogBtnTitle='Add'
-              dialogAction={handleCreateUser}
-              handleChangeInput={handleChangeDataUser}
-              dialogFormData={formDataUser}
-            ></DialogContentUser>
+            <DialogContentUser dialogTitle='Add user' dialogBtnTitle='Add' actionType='create'></DialogContentUser>
           </Dialog>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

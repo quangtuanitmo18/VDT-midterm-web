@@ -1,26 +1,89 @@
+import { useQueryClient } from '@tanstack/react-query'
+import { useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
 import { Button } from 'src/components/ui/button'
 import { DialogContent, DialogFooter, DialogHeader, DialogTitle } from 'src/components/ui/dialog'
 import { Input } from 'src/components/ui/input'
 import { Label } from 'src/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from 'src/components/ui/select'
-import { User } from 'src/types/user/user.type'
+import { queryResources } from 'src/hooks/resources/query.resources'
+import useFetchListUsers from 'src/hooks/services/useFetchListUsers'
+import useFetchUserById from 'src/hooks/services/useFetchUserById'
+import useMutationCreateUser from 'src/hooks/services/useMutationCreateUser'
+import useMutationUpdateUser from 'src/hooks/services/useMutationUpdateUser'
 
 interface DialogContentProps {
   dialogTitle: string
   dialogBtnTitle: string
-  handleChangeInput: (e: React.ChangeEvent<HTMLInputElement>) => void
-  dialogFormData: Omit<User, '_id' | 'created_at' | 'updated_at'>
-  dialogAction: (e: React.FormEvent<HTMLFormElement>) => void
+  actionType: 'create' | 'update'
+  userId?: string
 }
-const DialogContentUser = ({
-  dialogTitle,
-  dialogBtnTitle,
-  dialogAction,
-  handleChangeInput,
-  dialogFormData
-}: DialogContentProps) => {
+const DialogContentUser = ({ dialogTitle, dialogBtnTitle, actionType, userId }: DialogContentProps) => {
+  const [formDataUser, setFormDataUser] = useState({
+    fullname: '',
+    gender: 'nam',
+    university: ''
+  })
+
+  const queryClient = useQueryClient()
+
+  const { createUserMutate } = useMutationCreateUser()
+  const { updateUserMutate } = useMutationUpdateUser()
+  const { user, isPendingFetchUserByid } = useFetchUserById(userId as string)!
+  const { refetchListUsers } = useFetchListUsers()
+
+  const handleChangeDataUser = (e: any) => {
+    const { name, value } = e.target
+    setFormDataUser({
+      ...formDataUser,
+      [name]: value
+    })
+  }
+
+  const handleActionSubmit = (e: any, actionType: 'create' | 'update', userId?: string) => {
+    e.preventDefault()
+    if (actionType === 'create') {
+      createUserMutate(
+        { user: formDataUser },
+        {
+          onSuccess: () => {
+            toast.success('Create user successfully')
+            refetchListUsers()
+            setFormDataUser({
+              fullname: '',
+              gender: 'nam',
+              university: ''
+            })
+          }
+        }
+      )
+    } else if (actionType === 'update') {
+      updateUserMutate(
+        { userId: userId as string, body: formDataUser },
+        {
+          onSuccess: () => {
+            toast.success('Update user successfully')
+            queryClient.invalidateQueries({ queryKey: [queryResources.user.list] })
+          }
+        }
+      )
+    }
+  }
+
+  useEffect(() => {
+    if (actionType === 'update' && user) {
+      setFormDataUser({
+        fullname: user.fullname,
+        gender: user.gender,
+        university: user.university
+      })
+    }
+  }, [userId, user])
+
+  if (userId && isPendingFetchUserByid) return null
+
   return (
-    <form onSubmit={dialogAction}>
+    <form>
       <DialogContent className='sm:max-w-[425px]'>
         <DialogHeader>
           <DialogTitle>{dialogTitle}</DialogTitle>
@@ -33,8 +96,8 @@ const DialogContentUser = ({
             <Input
               id='fullname'
               name='fullname'
-              value={dialogFormData.fullname}
-              onChange={handleChangeInput}
+              value={formDataUser.fullname}
+              onChange={handleChangeDataUser}
               className='col-span-3'
             />
           </div>
@@ -44,7 +107,8 @@ const DialogContentUser = ({
             </Label>
             <Select
               name='gender'
-              onValueChange={(value) => handleChangeInput({ target: { name: 'gender', value } } as any)}
+              onValueChange={(value) => handleChangeDataUser({ target: { name: 'gender', value } } as any)}
+              value={formDataUser.gender}
             >
               <SelectTrigger className='w-[180px]'>
                 <SelectValue placeholder='Nam' />
@@ -62,14 +126,14 @@ const DialogContentUser = ({
             <Input
               id='university'
               name='university'
-              value={dialogFormData.university}
-              onChange={handleChangeInput}
+              value={formDataUser.university}
+              onChange={handleChangeDataUser}
               className='col-span-3'
             />
           </div>
         </div>
         <DialogFooter>
-          <Button type='submit' onClick={(e: any) => dialogAction(e)}>
+          <Button type='submit' onClick={(e: any) => handleActionSubmit(e, actionType, userId)}>
             {dialogBtnTitle}
           </Button>
         </DialogFooter>
