@@ -5,10 +5,11 @@ import http from 'src/utils/http'
 const userService = {
   getUserById(id: string) {
     return http.get<SuccessResponse<User>>(`users/${id}`)
+  },
+
+  getListUsers() {
+    return http.get<SuccessResponse<User[]>>('users/list')
   }
-  // updateProfile(body: BodyUpdateProfile) {
-  //   return http.put<SuccessResponse<User>>('user', body)
-  // },
 }
 
 export default userService

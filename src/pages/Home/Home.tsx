@@ -1,10 +1,17 @@
-import useFetchUserById from 'src/hooks/services/useFetchUserById'
+import LoadingSpin from 'src/components/loading'
+import useFetchListUsers from 'src/hooks/services/useFetchListUsers'
+import { DataTable } from './components/userTable/dataTable'
+import { columns } from './components/userTable/columns'
 
 const Home = () => {
-  const { user } = useFetchUserById('664632556cfefb42c351d1a5')
-  console.log(user)
+  const { listUsers, isPendingFetchListUsers } = useFetchListUsers()
 
-  return <div className='text-3xl text-red-500'>Home</div>
+  if (isPendingFetchListUsers) return <LoadingSpin></LoadingSpin>
+  return (
+    <div className='container'>
+      <DataTable columns={columns} data={listUsers} />
+    </div>
+  )
 }
 
 export default Home

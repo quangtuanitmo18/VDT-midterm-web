@@ -1,5 +1,6 @@
 export const queryResources = {
   user: {
-    getById: 'getUserById'
+    getById: 'getUserById',
+    list: 'getListUsers'
   }
 }
