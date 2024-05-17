@@ -9,6 +9,10 @@ const userService = {
 
   getListUsers() {
     return http.get<SuccessResponse<User[]>>('users/list')
+  },
+
+  deleteUser(id: string) {
+    return http.delete(`users/delete/${id}`)
   }
 }
 

@@ -2,6 +2,7 @@ import LoadingSpin from 'src/components/loading'
 import useFetchListUsers from 'src/hooks/services/useFetchListUsers'
 import { DataTable } from './components/userTable/dataTable'
 import { columns } from './components/userTable/columns'
+import useMutationDeleteUser from 'src/hooks/services/useMutationDeleteUser'
 
 const Home = () => {
   const { listUsers, isPendingFetchListUsers } = useFetchListUsers()

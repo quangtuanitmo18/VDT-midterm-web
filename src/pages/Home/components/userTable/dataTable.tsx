@@ -1,3 +1,4 @@
+import { UseMutateFunction } from '@tanstack/react-query'
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -10,6 +11,7 @@ import {
   getSortedRowModel,
   useReactTable
 } from '@tanstack/react-table'
+import { AxiosResponse } from 'axios'
 import { useState } from 'react'
 import { Button } from 'src/components/ui/button'
 import {

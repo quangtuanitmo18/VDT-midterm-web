@@ -10,6 +10,9 @@ import {
   DropdownMenuTrigger
 } from 'src/components/ui/dropdown-menu'
 import { Button } from 'src/components/ui/button'
+import useMutationDeleteUser from 'src/hooks/services/useMutationDeleteUser'
+import { toast } from 'react-toastify'
+import useFetchListUsers from 'src/hooks/services/useFetchListUsers'
 
 export const columns: ColumnDef<User>[] = [
   {
@@ -49,6 +52,8 @@ export const columns: ColumnDef<User>[] = [
     id: 'actions',
     cell: ({ row }) => {
       const user = row.original
+      const { deleteUserMutate } = useMutationDeleteUser()
+      const { refetchListUsers } = useFetchListUsers()
 
       return (
         <DropdownMenu>
@@ -60,10 +65,23 @@ export const columns: ColumnDef<User>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align='end'>
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => navigator.clipboard.writeText(user._id)}>Copy payment ID</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigator.clipboard.writeText(user._id)}>Copy user ID</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() =>
+                deleteUserMutate(
+                  { userId: user._id },
+                  {
+                    onSuccess: () => {
+                      toast.success('Delete user successfully!')
+                      refetchListUsers()
+                    }
+                  }
+                )
+              }
+            >
+              Delete user
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )
