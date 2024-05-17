@@ -11,9 +11,9 @@ import {
   getSortedRowModel,
   useReactTable
 } from '@tanstack/react-table'
-import { AxiosResponse } from 'axios'
 import { useState } from 'react'
 import { Button } from 'src/components/ui/button'
+import { Dialog, DialogTrigger } from 'src/components/ui/dialog'
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -22,6 +22,9 @@ import {
 } from 'src/components/ui/dropdown-menu'
 import { Input } from 'src/components/ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'src/components/ui/table'
+import DialogContentUser from './dialogContentUser'
+import useMutationCreateUser from 'src/hooks/services/useMutationCreateUser'
+import { toast } from 'react-toastify'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -32,6 +35,40 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+
+  const { createUserMutate } = useMutationCreateUser()
+
+  const [formDataUser, setFormDataUser] = useState({
+    fullname: '',
+    gender: 'nam',
+    university: ''
+  })
+  console.log(formDataUser)
+
+  const handleChangeDataUser = (e: any) => {
+    const { name, value } = e.target
+    setFormDataUser({
+      ...formDataUser,
+      [name]: value
+    })
+  }
+  const handleCreateUser = (e: any) => {
+    e.preventDefault()
+    console.log(formDataUser)
+    createUserMutate(
+      { user: formDataUser },
+      {
+        onSuccess: () => {
+          toast.success('Create user successfully')
+          setFormDataUser({
+            fullname: '',
+            gender: 'nam',
+            university: ''
+          })
+        }
+      }
+    )
+  }
 
   const table = useReactTable({
     data,
@@ -52,37 +89,51 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
 
   return (
     <div>
-      <div className='flex items-center py-4'>
+      <div className='flex items-center justify-between py-4'>
         <Input
           placeholder='Filter fullname...'
           value={(table.getColumn('fullname')?.getFilterValue() as string) ?? ''}
           onChange={(event) => table.getColumn('fullname')?.setFilterValue(event.target.value)}
           className='max-w-sm'
         />
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant='outline' className='ml-auto'>
-              Columns
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align='end'>
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className='capitalize'
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                )
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className='space-x-2'>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant='outline'>Add user</Button>
+            </DialogTrigger>
+            <DialogContentUser
+              dialogTitle='Add user'
+              dialogBtnTitle='Add'
+              dialogAction={handleCreateUser}
+              handleChangeInput={handleChangeDataUser}
+              dialogFormData={formDataUser}
+            ></DialogContentUser>
+          </Dialog>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant='outline' className='ml-auto'>
+                Columns
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align='end'>
+              {table
+                .getAllColumns()
+                .filter((column) => column.getCanHide())
+                .map((column) => {
+                  return (
+                    <DropdownMenuCheckboxItem
+                      key={column.id}
+                      className='capitalize'
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                    >
+                      {column.id}
+                    </DropdownMenuCheckboxItem>
+                  )
+                })}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
       <div className='rounded-md border'>
         <Table>

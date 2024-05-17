@@ -1,4 +1,5 @@
-import { User } from 'src/types/user.type'
+import { CreateUserBody } from 'src/types/user/user.api.type'
+import { User } from 'src/types/user/user.type'
 import { SuccessResponse } from 'src/types/utils.type'
 import http from 'src/utils/http'
 
@@ -13,6 +14,10 @@ const userService = {
 
   deleteUser(id: string) {
     return http.delete(`users/delete/${id}`)
+  },
+
+  createUser(data: CreateUserBody) {
+    return http.post('users/create', data)
   }
 }
 

@@ -1,5 +1,5 @@
 import { ColumnDef } from '@tanstack/react-table'
-import { User } from 'src/types/user.type'
+import { User } from 'src/types/user/user.type'
 import { ArrowUpDown, MoreHorizontal } from 'lucide-react'
 import {
   DropdownMenu,

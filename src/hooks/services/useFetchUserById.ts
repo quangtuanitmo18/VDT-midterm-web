@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 import { queryResources } from '../resources/query.resources'
 import userService from 'src/services/user.service'
-import { User } from 'src/types/user.type'
+import { User } from 'src/types/user/user.type'
 
 export default function useFetchUserById(id: string) {
   const {
