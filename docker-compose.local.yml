@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  web:
+    container_name: vdt-midterm-web
+    build: ./
+    ports:
+      - '3000:80'
+    restart: always
+    image: vdt-midterm-web:v1
+    env_file:
+      - .env
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    external: true
