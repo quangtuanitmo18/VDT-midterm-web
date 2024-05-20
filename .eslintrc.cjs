@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const path = require('path')
 module.exports = {
   extends: [
@@ -8,7 +9,7 @@ module.exports = {
     'plugin:jsx-a11y/recommended',
     'plugin:@typescript-eslint/recommended',
     'eslint-config-prettier',
-    'prettier',
+    'prettier'
   ],
   plugins: ['prettier'],
   settings: {
