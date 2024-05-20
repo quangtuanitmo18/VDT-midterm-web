@@ -9,7 +9,6 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'eslint-config-prettier',
     'prettier',
-    'plugin:storybook/recommended'
   ],
   plugins: ['prettier'],
   settings: {

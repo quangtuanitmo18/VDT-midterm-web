@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import {  lazy, Suspense } from 'react'
+import { lazy, Suspense } from 'react'
 import { useRoutes } from 'react-router-dom'
 import MainLayout from './layouts/MainLayout'
 
@@ -10,12 +10,12 @@ export default function useRouteElements() {
   const routeElements = useRoutes([
     {
       path: '',
-        element: (
-          <MainLayout>
-            <Suspense>
-              <Home />
-            </Suspense>
-          </MainLayout>
+      element: (
+        <MainLayout>
+          <Suspense>
+            <Home />
+          </Suspense>
+        </MainLayout>
       )
     },
     {
