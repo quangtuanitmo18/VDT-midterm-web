@@ -1,0 +1,22 @@
+version: "3.8"
+services:
+  web:
+    container_name: ${NAME_WEB}
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      args:
+        IMAGE_TAG: ${IMAGE_TAG:-1.0.0}
+    ports:
+      - "80:80"
+    restart: always
+    image: ${NAME_WEB}:${IMAGE_TAG}
+    environment:
+      - IMAGE_TAG=${IMAGE_TAG:-1.0.0}
+      - NAME_WEB=${NAME_WEB}
+    networks:
+      - app-network
+   
+networks:
+  app-network:
+    external: true
