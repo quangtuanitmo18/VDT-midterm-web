@@ -1,0 +1,13 @@
+# vdt-web/values.yaml
+replicaCount: 3
+
+image:
+  repository: tuanquang1811/vdt-midterm-web
+  tag: v1
+  pullPolicy: IfNotPresent
+
+service:
+  name: vdt-web
+  type: NodePort
+  port: 80
+  nodePort: 30002
