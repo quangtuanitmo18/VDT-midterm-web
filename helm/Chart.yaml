@@ -1,0 +1,4 @@
+apiVersion: v1
+name: vdt-web
+description: A Helm chart for deploying vdt-web application
+version: 0.1.0

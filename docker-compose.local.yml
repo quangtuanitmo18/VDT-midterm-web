@@ -4,7 +4,7 @@ services:
     container_name: vdt-midterm-web
     build: ./
     ports:
-      - '3000:80'
+      - '80:80'
     restart: always
     image: vdt-midterm-web:v1
     env_file:

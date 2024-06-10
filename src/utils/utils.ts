@@ -1,6 +1,7 @@
 import axios, { AxiosError } from 'axios'
 import config from 'src/constants/config'
 import HttpStatusCode from 'src/constants/httpStatusCode.enum'
+// eslint-disable-next-line import/no-unresolved
 import userImage from 'src/assets/images/user.svg'
 import { ErrorResponse } from 'src/types/utils.type'
 
