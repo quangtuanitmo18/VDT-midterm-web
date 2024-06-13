@@ -18,4 +18,26 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         ports:
         - containerPort: {{ .Values.service.port }}
-
+      - name: prometheus-node-exporter
+        image: "{{ .Values.prometheusNodeExporter.image.repository }}:{{ .Values.prometheusNodeExporter.image.tag }}"
+        ports:
+        - containerPort: {{ .Values.prometheusNodeExporter.ports.metrics }}
+        args:
+        - --path.procfs=/host/proc
+        - --path.sysfs=/host/sys
+        - --collector.filesystem.ignored-mount-points
+        - ^/(dev|proc|sys|var/lib/docker/.+)($|/)
+        volumeMounts:
+        - name: proc
+          mountPath: /host/proc
+          readOnly: true
+        - name: sys
+          mountPath: /host/sys
+          readOnly: true
+      volumes:
+      - name: proc
+        hostPath:
+          path: /proc
+      - name: sys
+        hostPath:
+          path: /sys

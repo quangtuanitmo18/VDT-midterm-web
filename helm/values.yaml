@@ -1,4 +1,4 @@
-# vdt-web/values.yaml
+# api-web/values.yaml
 replicaCount: 3
 
 image:
@@ -9,5 +9,21 @@ image:
 service:
   name: vdt-web
   type: NodePort
-  port: 80
-  nodePort: 30002
+  ports:
+    http:
+      port: 80
+      targetPort: 80
+      nodePort: 30002
+    metrics:
+      port: 9100
+      targetPort: 9100
+      nodePort: 30004
+  labels:
+    app: vdt-web
+prometheusNodeExporter:
+  enabled: true
+  image:
+    repository: prom/node-exporter
+    tag: latest
+  ports:
+    metrics: 9100
